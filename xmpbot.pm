@@ -46,16 +46,6 @@ has '_condvar' => (
 	default	=> sub { AnyEvent->condvar; },
 );
 
-has '_disco' => (
-	is	=> 'ro',
-	default	=> sub { AnyEvent::XMPP::Ext::Disco->new; },
-);
-
-has '_version' => (
-	is	=> 'ro',
-	default	=> sub { AnyEvent::XMPP::Ext::Version->new; },
-);
-
 sub BUILD {
 	my $self = shift;
 	# setting up plugins
@@ -82,8 +72,6 @@ sub BUILD {
 				"with keyword @$ret[0]\n");
 		}
 	}
-	$self->add_extension($self->_disco);
-	$self->add_extension($self->_version);
 	$self->set_presence(undef, "Hurr, I'm a bot");
 	$self->add_account($self->jid, $self->passwd);
 	$self->reg_cb(
