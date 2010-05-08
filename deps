@@ -1,0 +1,5 @@
+Dependencies:
+
+Moose
+AnyEvent::XMPP
+Net::SSLeay (for some reason)
