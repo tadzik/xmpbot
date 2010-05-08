@@ -4,8 +4,6 @@ use strict;
 use warnings;
 use AnyEvent;
 use AnyEvent::XMPP::Client;
-use AnyEvent::XMPP::Ext::Disco;
-use AnyEvent::XMPP::Ext::Version;
 #'plugins' was colliding with AnyEvent::XMPP::Client
 use Module::Pluggable sub_name => 'pluggable', require => 1;
 use Moose;
