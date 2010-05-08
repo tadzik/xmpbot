@@ -6,11 +6,10 @@ use AnyEvent;
 use AnyEvent::XMPP::Client;
 use AnyEvent::XMPP::Ext::Disco;
 use AnyEvent::XMPP::Ext::Version;
-#use Module::Pluggable;
 use Moose;
-
-# TODO: We can use MooseX::NonMoose to subclass AnyEvent::XMPP::Client
-# Want?
+use MooseX::NonMoose;
+#use Module::Pluggable;
+extends 'AnyEvent::XMPP::Client';
 
 has 'jid' => (
 	is		=> 'ro',
@@ -29,11 +28,6 @@ has '_condvar' => (
 	default	=> sub { AnyEvent->condvar; },
 );
 
-has '_cl' => (
-	is	=> 'ro',
-	default	=> sub { AnyEvent::XMPP::Client->new; },
-);
-
 has '_disco' => (
 	is	=> 'ro',
 	default	=> sub { AnyEvent::XMPP::Ext::Disco->new; },
@@ -46,11 +40,11 @@ has '_version' => (
 
 sub BUILD {
 	my $self = shift;
-	$self->_cl->add_extension($self->_disco);
-	$self->_cl->add_extension($self->_version);
-	$self->_cl->set_presence(undef, "Hurr, I'm a bot");
-	$self->_cl->add_account($self->jid, $self->passwd);
-	$self->_cl->reg_cb(
+	$self->add_extension($self->_disco);
+	$self->add_extension($self->_version);
+	$self->set_presence(undef, "Hurr, I'm a bot");
+	$self->add_account($self->jid, $self->passwd);
+	$self->reg_cb(
 		session_ready => sub {
 			warn "Connected\n";
 		},
@@ -77,7 +71,7 @@ sub BUILD {
 
 sub run {
 	my $self = shift;
-	$self->_cl->start;
+	$self->start;
 	$self->_condvar->wait;
 }
 
