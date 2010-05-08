@@ -6,9 +6,10 @@ use AnyEvent;
 use AnyEvent::XMPP::Client;
 use AnyEvent::XMPP::Ext::Disco;
 use AnyEvent::XMPP::Ext::Version;
+#'plugins' was colliding with AnyEvent::XMPP::Client
+use Module::Pluggable sub_name => 'pluggable', require => 1;
 use Moose;
 use MooseX::NonMoose;
-#use Module::Pluggable;
 extends 'AnyEvent::XMPP::Client';
 
 has 'jid' => (
@@ -21,6 +22,23 @@ has 'passwd' => (
 	is		=> 'ro',
 	isa		=> 'Str',
 	required	=> 1,
+);
+
+has 'plugins' => (
+	is	=> 'ro',
+	isa	=> 'HashRef',
+	default	=> sub { {} },
+	traits	=> ['Hash'],
+	handles	=> {
+		set_plugin	=> 'set',
+		get_plugin	=> 'get',
+	},
+);
+
+has 'verbose' => (
+	is	=> 'rw',
+	isa	=> 'Bool',
+	default	=> 0,
 );
 
 has '_condvar' => (
@@ -40,19 +58,54 @@ has '_version' => (
 
 sub BUILD {
 	my $self = shift;
+	# setting up plugins
+	foreach my $plugin ($self->pluggable) {
+		$self->log("Initializing $plugin\n");
+		my $ret = $plugin->init;
+		next unless $ret;
+		if ($self->get_plugin(@$ret[0])) {
+			$self->log("Plugin $plugin tried to register a ",
+			"keyword @$ret[0], which is alredy registered\n");
+		} else {
+			# TODO: Support for passive plugins maybe?
+			# So they return undef instead of a keyword
+			# and always handle every message.
+			# Usecase? Logs, or something
+			$self->set_plugin(
+				@$ret[0] => {
+					plugin	=> $plugin,
+					info	=> @$ret[1],
+					help	=> @$ret[2],
+				},
+			);
+			$self->log("Registered plugin $plugin ",
+				"with keyword @$ret[0]\n");
+		}
+	}
 	$self->add_extension($self->_disco);
 	$self->add_extension($self->_version);
 	$self->set_presence(undef, "Hurr, I'm a bot");
 	$self->add_account($self->jid, $self->passwd);
 	$self->reg_cb(
 		session_ready => sub {
-			warn "Connected\n";
+			$self->log("Connected\n");
 		},
 		message => sub {
 			my ($cl, $acc, $msg) = @_;
-			my $repl = $msg->make_reply;
-			$repl->add_body('Nieznane polecenie. Hi hi.');
-			$repl->send;
+			my ($comm, @args) = split / /, $msg;
+			my $repl = undef;
+			my $plugin = $self->get_plugin($comm);
+			if ($plugin) {
+				my $ret = $plugin->{plugin}->msg_cb(@args);
+				if ($ret) {
+					$repl = $msg->make_reply;
+					$repl->add_body($ret);
+				}
+			} else {
+				$repl = $msg->make_reply;
+				$repl->add_body("Unknown command: $comm");
+			}
+			$repl->send if $repl;
 		},
 		contact_request_subscribe => sub {
 			my ($cl, $acc, $roster, $contact) = @_;
@@ -61,12 +114,19 @@ sub BUILD {
 		},
 		error => sub {
 			my ($cl, $acc, $error) = @_;
-			warn "Error encountered: ".$error->string."\n";
+			$self->log("Error encountered: ".$error->string."\n");
 		},
 		disconnect => sub {
-			warn "Whoops, disconnected (@_)\n";
+			$self->log("Whoops, disconnected (@_)\n");
 		},
 	);
+}
+
+sub log {
+	my ($self, @args) = @_;
+	if($self->verbose) {
+		print @args;
+	}
 }
 
 sub run {
