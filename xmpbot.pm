@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use AnyEvent;
 use AnyEvent::XMPP::Client;
-#'plugins' was colliding with AnyEvent::XMPP::Client
+#'plugins' was colliding with our class attribute
 use Module::Pluggable sub_name => 'pluggable', require => 1;
 use Moose;
 use MooseX::NonMoose;
