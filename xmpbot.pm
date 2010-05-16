@@ -39,11 +39,6 @@ has 'verbose' => (
 	default	=> 0,
 );
 
-has '_condvar' => (
-	is	=> 'ro',
-	default	=> sub { AnyEvent->condvar; },
-);
-
 sub BUILD {
 	my $self = shift;
 	# setting up plugins
@@ -117,8 +112,9 @@ sub log {
 
 sub run {
 	my $self = shift;
+	my $c = AnyEvent->condvar;
 	$self->start;
-	$self->_condvar->wait;
+	$c->wait;
 }
 
 no Moose;
