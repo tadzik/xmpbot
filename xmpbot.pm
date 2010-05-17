@@ -72,6 +72,7 @@ sub BUILD {
 		},
 		message => sub {
 			my ($cl, $acc, $msg) = @_;
+			return unless $msg;
 			my ($comm, $args) = split / /, $msg, 2;
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
