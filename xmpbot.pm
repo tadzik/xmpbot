@@ -1,7 +1,5 @@
 package xmpbot;
-use feature ':5.12';
-use strict;
-use warnings;
+use feature ':5.10';
 use AnyEvent;
 use AnyEvent::XMPP::Client;
 #'plugins' was colliding with our class attribute
