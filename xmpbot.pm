@@ -24,7 +24,7 @@ has 'passwd' => (
 
 has 'plugins' => (
 	is	=> 'ro',
-	isa	=> 'HashRef',
+	isa	=> 'HashRef[HashRef[Str]]',
 	default	=> sub { {} },
 	traits	=> ['Hash'],
 	handles	=> {
