@@ -30,6 +30,7 @@ has 'plugins' => (
 	handles	=> {
 		set_plugin	=> 'set',
 		get_plugin	=> 'get',
+		plugins_pairs	=> 'kv',
 	},
 );
 
@@ -73,11 +74,11 @@ sub BUILD {
 		},
 		message => sub {
 			my ($cl, $acc, $msg) = @_;
-			my ($comm, @args) = split / /, $msg;
+			my ($comm, $args) = split / /, $msg, 2;
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
 			if ($plugin) {
-				my $ret = $plugin->{plugin}->msg_cb(@args);
+				my $ret = $plugin->{plugin}->msg_cb($args, $self);
 				if ($ret) {
 					$repl = $msg->make_reply;
 					$repl->add_body($ret);
