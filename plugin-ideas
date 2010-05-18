@@ -1,0 +1,14 @@
+1.Ad
+-Option: Ad(default=false)
+-plugin send Ads for users with option 'Ad'==true
+-I think that some people will want to financially assist the project by receiving ads.
+2.Public transportation
+-Option: City
+-Plugin get information from site for example http://www.wroclaw.pl/m3298/
+Example:
+1)komunikacja linie
+ return all lines
+2)komunikacja 0
+ return stops and routes
+3)komunikacja 0#5
+ return schedule of line 0 on 5th stop.
