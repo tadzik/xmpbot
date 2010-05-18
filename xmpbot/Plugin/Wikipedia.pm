@@ -11,7 +11,10 @@ sub msg_cb {
 	my ($self, $msg) = @_;
 	$msg=~ tr/ /_/; #zamiana białych znaków na "_"
 	($wiki,$rozdzial) = split(/#/, $msg);
+	#TODO: Zazwyczaj jak ktoś szuka jakiś informacji najpierw wpisze np. wiki Warszawa potem wiki Warszawa#1 itp. Dlatego potrzebny cashe (najlepiej w db)
+	#TODO: lang.wikipedia.org ......
 	my $url = "http://pl.wikipedia.org/w/api.php?action=query&prop=revisions&titles=".$wiki."&rvprop=content&format=xml";
+	print "Wikipedia.pm: Download from ".$url."\n";
 	my $content = get $url; #pobieramy dane
 	#if($content== ?? )
 	#	return "Nie ma takiego hasła";
@@ -35,7 +38,7 @@ sub msg_cb {
 	$content=~ s/\[\[[^\]]*\]\]//g;
 
 	#Pobieramy rozdziały
-	my $rozdzialy = [];
+	@rozdzialy = ();
 	while ( $content =~ m/(=(==*)([^=]*)===*(([^=]|=[^=])*))/g ){
 	    	push (@rozdzialy, [$2,$3,$4]);
 	}	
