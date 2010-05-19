@@ -1,6 +1,9 @@
 package xmpbot::Plugin::Aspell;
 use Text::Aspell;
 
+no utf8;
+use Encode;
+
 sub init {
 	return ['aspell', '',
 		''];
@@ -36,7 +39,7 @@ sub msg_cb {
 		foreach (@suggestions) {
 			$ret=$ret.$_.", ";
 		}
-		return $ret;
+		return decode 'utf8', $ret;
 	}
 }
 
