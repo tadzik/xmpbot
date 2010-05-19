@@ -1,6 +1,6 @@
 package xmpbot::Plugin::Translate;
 use Lingua::Translate;
-use utf8;
+no utf8;
 
 sub init {
 	return ['tr', '',
@@ -21,8 +21,10 @@ sub msg_cb {
                                    dest => $desc)
 	or return "Nie obsługiwane tłumaczenie $src -> $desc";
 
-	print $src."2".$desc." ".$text."\n";
-	return $xl8r->translate($text); 	
+
+	my $ret=$xl8r->translate($text);
+	print $src."2".$desc." ".$text."->".$ret."\n";	
+	return $ret; 	
 }
 
 1;
