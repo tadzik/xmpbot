@@ -9,13 +9,13 @@ sub init {
 
 sub msg_cb {
 	my ($self, $msg) = @_;
-	$msg=~ tr/ /_/; #zamiana białych znaków na "_"
+	$msg=~ tr/ /_/; #changing white spaces
 	($wiki,$rozdzial) = split(/#/, $msg);
 	#TODO: Zazwyczaj jak ktoś szuka jakiś informacji najpierw wpisze np. wiki Warszawa potem wiki Warszawa#1 itp. Dlatego potrzebny cashe (najlepiej w db)
 	#TODO: lang.wikipedia.org ......
 	my $url = "http://pl.wikipedia.org/w/api.php?action=query&prop=revisions&titles=".$wiki."&rvprop=content&format=xml";
 	print "Wikipedia.pm: Download from ".$url."\n";
-	my $content = get $url; #pobieramy dane
+	my $content = get $url; #pobieramy dane	
 	#if($content== ?? )
 	#	return "Nie ma takiego hasła";
 
@@ -42,9 +42,9 @@ sub msg_cb {
 	while ( $content =~ m/(=(==*)([^=]*)===*(([^=]|=[^=])*))/g ){
 	    	push (@rozdzialy, [$2,$3,$4]);
 	}	
-	#zostawiamy tylko wstęp
 	$content=~ s/==[\s\S]*//;
 
+	my $ret;
 
 	if($rozdzial==""){ #gdy nie podano rozdziału		
 		$content=$content."\n\nSpis treści:";
@@ -52,10 +52,13 @@ sub msg_cb {
 		for(my $i=0; $i<$#rozdzialy; $i++) {
 			$content=$content."\n{wiki $wiki#".($i+1)."}.".$rozdzialy[$i][0].$rozdzialy[$i][1];
 		} 
-		return $content;
+		$ret=$content;
 	}else{
-		return $rozdzialy[$rozdzial-1][2];
+		$ret=$rozdzialy[$rozdzial-1][2];
 	}
+	$ret="Źródło: http://pl.wikipedia.org/wiki/".$wiki."\n\n".$ret;
+
+	return $ret;
 }
 
 1;
