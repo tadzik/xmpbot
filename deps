@@ -10,3 +10,5 @@ Translate.pm:
 	Lingua::Translate::Google
 Wikipedia.pm:
 	LWP::Simple
+Aspell.pm
+	use Text::Aspell;
