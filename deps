@@ -4,3 +4,9 @@ Moose
 MooseX::NonMoose
 AnyEvent::XMPP
 Net::SSLeay (for some reason)
+
+Translate.pm:
+	Lingua::Translate
+	Lingua::Translate::Google
+Wikipedia.pm:
+	LWP::Simple
