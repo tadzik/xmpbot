@@ -1,4 +1,4 @@
-package xmpbot::Plugin::Cloudmade;
+package Cloudmade;
 use Geo::Cloudmade;
 use utf8;
 

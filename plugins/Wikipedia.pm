@@ -1,10 +1,10 @@
-package xmpbot::Plugin::Wikipedia;
+package Wikipedia;
 use LWP::Simple;
 use utf8;
 
 sub init {
-	return ['wiki', '',
-		''];
+	return ['wiki', 'query wikipedia.org',
+		'this plugin looks up desired article on wikipedia.org and prints it to the user'];
 }
 
 sub msg_cb {
@@ -62,5 +62,3 @@ sub msg_cb {
 }
 
 1;
-
-

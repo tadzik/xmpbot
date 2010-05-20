@@ -1,4 +1,4 @@
-package xmpbot::Plugin::Help;
+package Help;
 
 sub init {
 	return ['help', 'list all available commands',

@@ -1,9 +1,8 @@
 package xmpbot;
 use feature ':5.10';
+use lib 'plugins';
 use AnyEvent;
 use AnyEvent::XMPP::Client;
-#'plugins' was colliding with our class attribute
-use Module::Pluggable sub_name => 'pluggable', require => 1;
 use Moose;
 use MooseX::NonMoose;
 extends 'AnyEvent::XMPP::Client';
@@ -40,30 +39,6 @@ has 'verbose' => (
 
 sub BUILD {
 	my $self = shift;
-	# setting up plugins
-	foreach my $plugin ($self->pluggable) {
-		$self->log("Initializing $plugin\n");
-		my $ret = $plugin->init;
-		next unless $ret;
-		if ($self->get_plugin(@$ret[0])) {
-			$self->log("Plugin $plugin tried to register a ",
-			"keyword @$ret[0], which is alredy registered\n");
-		} else {
-			# TODO: Support for passive plugins maybe?
-			# So they return undef instead of a keyword
-			# and always handle every message.
-			# Usecase? Logs, or something
-			$self->set_plugin(
-				@$ret[0] => {
-					plugin	=> $plugin,
-					info	=> @$ret[1],
-					help	=> @$ret[2],
-				},
-			);
-			$self->log("Registered plugin $plugin ",
-				"with keyword @$ret[0]\n");
-		}
-	}
 	$self->set_presence(undef, "Hurr, I'm a bot");
 	$self->add_account($self->jid, $self->passwd);
 	$self->reg_cb(
@@ -101,6 +76,31 @@ sub BUILD {
 			$self->log("Whoops, disconnected (@_)\n");
 		},
 	);
+}
+
+sub load_plugin {
+	my ($self, $plugin) = @_;
+	require $plugin . '.pm';
+	my $ret = $plugin->init;
+	next unless $ret;
+	if ($self->get_plugin(@$ret[0])) {
+		$self->log("Plugin $plugin tried to register a ",
+		"keyword @$ret[0], which is alredy registered\n");
+	} else {
+		# TODO: Support for passive plugins maybe?
+		# So they return undef instead of a keyword
+		# and always handle every message.
+		# Usecase? Logs, or something
+		$self->set_plugin(
+			@$ret[0] => {
+				plugin	=> $plugin,
+				info	=> @$ret[1],
+				help	=> @$ret[2],
+			},
+		);
+		$self->log("Registered plugin $plugin ",
+			"with keyword @$ret[0]\n");
+	}
 }
 
 sub log {

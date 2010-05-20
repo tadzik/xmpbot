@@ -1,4 +1,4 @@
-package xmpbot::Plugin::Ping;
+package Ping;
 
 sub init {
 	return ['ping', 'respond to "ping"',

@@ -1,4 +1,4 @@
-package xmpbot::Plugin::Translate;
+package Translate;
 use Lingua::Translate;
 
 no utf8;

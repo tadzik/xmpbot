@@ -5,4 +5,9 @@ my $bot = xmpbot->new(
 	passwd => 'neverforget'
 );
 
+$bot->load_plugin('Echo');
+$bot->load_plugin('Ping');
+$bot->load_plugin('Help');
+$bot->load_plugin('Wikipedia');
+
 $bot->run;

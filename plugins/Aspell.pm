@@ -1,4 +1,4 @@
-package xmpbot::Plugin::Aspell;
+package Aspell;
 use Text::Aspell;
 
 no utf8;

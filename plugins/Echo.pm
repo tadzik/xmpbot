@@ -1,5 +1,4 @@
-package xmpbot::Plugin::Echo;
-
+package Echo;
 
 sub init {
 	return ['echo', 'echoes what was said',
@@ -8,7 +7,6 @@ sub init {
 
 sub msg_cb {
 	my ($self, $msg) = @_;
-	print "Echo.pm: ".$msg."\n";
 	return $msg;
 }
 
