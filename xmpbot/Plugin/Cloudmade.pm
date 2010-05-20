@@ -3,8 +3,7 @@ use Geo::Cloudmade;
 use utf8;
 
 sub init {
-	return ['map', '',
-		''];
+	return ['map', 'komenda do wyszukiwania trasy oraz miejsc','Ta komenda korzysta z wyznaczania tras przez http://www.cloudmade.com na podstawie map http://www.openstreetmap.org. \nPrzykładowe zapytania:\n map ROUTE:Rynek,Wrocław&Damrota,Wrocław   -wyznacz trasę z Rynku na ulicę Damrota\n map POI:restaurant:Rynek,Warszawa    -znajdź najbliższe restauracje od Rynek,Wrocław'];
 }
 
 sub msg_cb {
@@ -75,10 +74,10 @@ sub msg_cb {
 		#else{
 		#	$by='car';}
 		print "Cloudmade.pm: Wyznaczam trase\n";
-		my $route = $geo->get_route([$arr[0]->centroid->lat, $arr[0]->centroid->long], [$arr2[0]->centroid->lat, $arr2[0]->centroid->long], 															{ type=>'foot', method=>'shortest' } );
-		if(not defined $route){
-			return "Przepraszam, nie mogę wyznaczyć trasy";
-		}
+		my $route = $geo->get_route([$arr[0]->centroid->lat, $arr[0]->centroid->long], [$arr2[0]->centroid->lat, $arr2[0]->centroid->long],	{ type=>'car', method=>'shortest' } );
+		#if(not defined $route){
+		#	return "Przepraszam, nie mogę wyznaczyć trasy";
+		#}
 		my $ret="Dystans: ".$route->total_distance."\n";
 		$ret.="Start: ".$route->start."\n";
 		$ret.="End: ".$route->end."\n";
