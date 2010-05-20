@@ -12,3 +12,5 @@ Wikipedia.pm:
 	LWP::Simple
 Aspell.pm
 	use Text::Aspell;
+Cloudmade.pm
+	use Geo::Cloudmade;

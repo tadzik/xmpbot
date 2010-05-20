@@ -10,8 +10,8 @@ sub init {
 sub msg_cb {
 	my ($self, $msg) = @_;
 	my ($parametr,$values) = split(/:/, $msg,2);	
-	#TODO: CHANGE API KEY
-	my $geo = Geo::Cloudmade->new('BC9A493B41014CAABB98F0471D759707');
+	#Api key
+	my $geo = Geo::Cloudmade->new('6b3cde25e6c24f72af16946717c9c6bb');
 
 
 	#TODO: Maybe can get more POIs? And option FORCE_FIND select first from @arr
@@ -20,7 +20,6 @@ sub msg_cb {
 		my @arr = $geo->find($where, {results=>5, skip=>0});
 			print $geo->error(), "\n" unless @arr;
 		#IF more then 1
-		print scalar (@arr), "\n";
 		if(scalar (@arr)>1){
 			my $ret="Położenie jest niejednoznaczne\n";
 			foreach (@arr) {
@@ -32,7 +31,7 @@ sub msg_cb {
 		}}
 		my $ret="Położenie:".$arr[0]->centroid->lat." ".$arr[0]->centroid->long."\n"."Szukane:".$type."\n";
 		my @POIs = $geo->find_closest($type, [$arr[0]->centroid->lat, $arr[0]->centroid->long]);
-		print "Znaleziono POI:",scalar(@POIs), "\n";
+		print "Cloudmade.pm: Znaleziono POI -",scalar(@POIs), "\n";
 		if (scalar(@POIs)!=0) {
 			foreach (@POIs) {
 				$ret=$ret.join (' ', $_->properties('name','addr:housenumber', 'addr:street', 'addr:postcode', 'addr:city')).":".$_->centroid->lat."/".$_->centroid->long."\n";
@@ -75,12 +74,16 @@ sub msg_cb {
 		#if (defined $by){print "Zdefiniowany ".$by."\n";}
 		#else{
 		#	$by='car';}
+		print "Cloudmade.pm: Wyznaczam trase\n";
 		my $route = $geo->get_route([$arr[0]->centroid->lat, $arr[0]->centroid->long], [$arr2[0]->centroid->lat, $arr2[0]->centroid->long], 															{ type=>'foot', method=>'shortest' } );
-
+		if(not defined $route){
+			return "Przepraszam, nie mogę wyznaczyć trasy";
+		}
 		my $ret="Dystans: ".$route->total_distance."\n";
 		$ret.="Start: ".$route->start."\n";
 		$ret.="End: ".$route->end."\n";
-		$ret.="Route segments:\n";
+		$ret.="\nTrasa:\n";
+		#TODO: REGEXP
 		$ret.=join (',', @$_). "\n" foreach (@{$route->segments});
 
 		return $ret;	
