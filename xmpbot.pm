@@ -3,6 +3,7 @@ use feature ':5.10';
 use lib 'plugins';
 use AnyEvent;
 use AnyEvent::XMPP::Client;
+use Module::Load;
 use Moose;
 use MooseX::NonMoose;
 extends 'AnyEvent::XMPP::Client';
@@ -80,7 +81,7 @@ sub BUILD {
 
 sub load_plugin {
 	my ($self, $plugin) = @_;
-	require $plugin . '.pm';
+	load $plugin;
 	my $ret = $plugin->init;
 	next unless $ret;
 	if ($self->get_plugin(@$ret[0])) {
