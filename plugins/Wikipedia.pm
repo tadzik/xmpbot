@@ -16,26 +16,25 @@ sub msg_cb {
 	my $url = "http://pl.wikipedia.org/w/api.php?action=query&prop=revisions&titles=".$wiki."&rvprop=content&format=xml";
 	print "Wikipedia.pm: Download from ".$url."\n";
 	my $content = get $url; #pobieramy dane	
-	#if($content== ?? )
-	#	return "Nie ma takiego hasła";
 
 	$content=~ s/^([\S\s])*<rev[^>]*>//; #usuwanie tagów XML
 	$content=~ s/<\/rev[\s\S]*$//;
 
-	#WYCIĄGANIE INFOBOXÓW
-	#my $infoboxy = [];
-	#while ( $content =~ m/({{(\0|(?R)|[^\}\{])*}})/g ){
-	#    	push (@infoboxy, $1);
-	#}	
-	#print $#infoboxy;
-	#USUWANIE INFOBOXÓW
-	#$content=~ s/({{*(\1|[^\}\{])*}*})//;
+	#TODO: Można to ulepszyć
+	$regex = qr/({{([^\}\{])*}})/;
+	$content=~ s/$regex//g;
+	$content=~ s/$regex//g;
+	$content=~ s/$regex//g;
+	$content=~ s/&[^\s\;]*;//g;
+
 
 	#Zmiana linków wikipedi na linki bota
 	$content=~ s/\[\[([^\]\:\|]*)\]\]/\1 {wiki \1}/g;
 	$content=~ s/\[\[([\w\s\(\)\.]*)\|([\w\s\(\)\.]*)\]\]/\2 {wiki \1}/g;
 	#Usuwamy to co zostalo (moze warto potem wyciągnąć różne wersje językowe)
 	$content=~ s/\[\[[^\]]*\]\]//g;
+	#remove new line
+#	$content=~ s///g;
 
 	#Pobieramy rozdziały
 	@rozdzialy = ();
@@ -48,7 +47,6 @@ sub msg_cb {
 
 	if($rozdzial==""){ #gdy nie podano rozdziału		
 		$content=$content."\n\nSpis treści:";
-		$i=0;
 		for(my $i=0; $i<$#rozdzialy; $i++) {
 			$content=$content."\n{wiki $wiki#".($i+1)."}.".$rozdzialy[$i][0].$rozdzialy[$i][1];
 		} 
@@ -57,7 +55,6 @@ sub msg_cb {
 		$ret=$rozdzialy[$rozdzial-1][2];
 	}
 	$ret="Źródło: http://pl.wikipedia.org/wiki/".$wiki."\n\n".$ret;
-
 	return $ret;
 }
 
