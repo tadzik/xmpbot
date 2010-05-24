@@ -77,15 +77,32 @@ sub checkdb{
 }
 
 sub getOption{
-#	my ($self, $user, $option) = @_;
-#	my $sth = $self->db->prepare("SELECT value FROM users,vals,options WHERE jid=? AND name=? AND options.id=optionID AND users.id=userID ");
-#	$sth->bind_param(1, $user, SQL_STRING);
-#	$sth->bind_param(2, $option, SQL_TEXT);
-#	$sth->execute();
-#	my $row = $sth->fetch;
-#	my $val = $row->[1];
-# 	return $val;
+	my ($self, $user, $option) = @_;
+	my $sth = $self->db->prepare("SELECT value FROM users,vals,options WHERE jid=? AND name=? AND options.id=optionID AND users.id=userID ");
+	$sth->bind_param(1, $user, SQL_VARCHAR);
+	$sth->bind_param(2, $option, SQL_VARCHAR);
+	$sth->execute();
+	my $row = $sth->fetch;
+	my $val = $row->[0];
+ 	return $val;
 }
+
+sub setOption{
+#	my ($self, $user, $option, $value) = @_;
+#	my $sth = $self->db->prepare("SELECT id FROM  options WHERE name=?");
+#	$sth->bind_param(1, $option, SQL_VARCHAR);
+#	$sth->execute();
+	#TODO: OPTION isn't in base
+#	my $optionID = $sth->fetch->[0];
+
+#	my $q2 = $self->db->prepare("SELECT id FROM  users WHERE jid=?");
+#	$q2->bind_param(1, $user, SQL_VARCHAR);
+#	$q2->execute();
+	#TODO: USER isn't in base
+#	my $userID = $q2->fetch->[0];
+
+}
+
 
 sub BUILD {
 	my $self = shift;
