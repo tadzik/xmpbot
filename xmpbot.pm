@@ -6,8 +6,10 @@ use AnyEvent::XMPP::Client;
 use Module::Load;
 use Moose;
 use MooseX::NonMoose;
+use DBI qw(:sql_types);
 extends 'AnyEvent::XMPP::Client';
 
+  
 has 'jid' => (
 	is		=> 'ro',
 	isa		=> 'Str',
@@ -38,8 +40,59 @@ has 'verbose' => (
 	default	=> 0,
 );
 
+has 'db' => (
+	is => 'rw',
+);
+
+has 'DBAddr' => (
+	is		=> 'ro',
+	isa		=> 'Str',
+	required	=> 1,
+);
+has 'DBDriver' => (
+	is		=> 'ro',
+	isa		=> 'Str',
+	default => 'SQLite'
+);
+has 'DBUser' => (
+	is		=> 'ro',
+	isa		=> 'Str',
+	default => ''
+);
+has 'DBPasswd' => (
+	is		=> 'ro',
+	isa		=> 'Str',
+	default => ''
+);
+
+
+
+sub checkdb{
+	#tables
+	#$db->do("CREATE TABLE options (id INTEGER PRIMARY KEY, name)");
+	#$db->do("CREATE TABLE users (id INTEGER PRIMARY KEY, jid)");
+	#$db->do("CREATE TABLE vals (id INTEGER PRIMARY KEY, userID, optionID,value)");
+	#TODO:CHECK
+	return 1;
+}
+
+sub getOption{
+#	my ($self, $user, $option) = @_;
+#	my $sth = $self->db->prepare("SELECT value FROM users,vals,options WHERE jid=? AND name=? AND options.id=optionID AND users.id=userID ");
+#	$sth->bind_param(1, $user, SQL_STRING);
+#	$sth->bind_param(2, $option, SQL_TEXT);
+#	$sth->execute();
+#	my $row = $sth->fetch;
+#	my $val = $row->[1];
+# 	return $val;
+}
+
 sub BUILD {
 	my $self = shift;
+	$self->db(DBI->connect("dbi:".$self->DBDriver.":".$self->DBAddr,$self->DBUser,$self->DBPasswd));
+	if(checkdb()==1){
+		print "Baza poprawna\n";
+	}
 	$self->set_presence(undef, "Hurr, I'm a bot");
 	$self->add_account($self->jid, $self->passwd);
 	$self->reg_cb(
