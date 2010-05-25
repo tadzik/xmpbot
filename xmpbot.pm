@@ -6,6 +6,7 @@ use AnyEvent::XMPP::Client;
 use Module::Load;
 use Moose;
 use MooseX::NonMoose;
+use Data::Dumper;
 use DBI qw(:sql_types);
 extends 'AnyEvent::XMPP::Client';
 
@@ -85,7 +86,7 @@ sub getOption{
 	my $sth = $self->db->prepare("SELECT value FROM users,vals,options WHERE jid=? AND name=? AND options.id=optionID AND users.id=userID ");
 	$sth->bind_param(1, $user, SQL_VARCHAR);
 	$sth->bind_param(2, $option, SQL_VARCHAR);
-	$sth->execute();
+	$sth->execute() or print $sth->errstr()."\n";
 	my @result = $sth->fetchrow_array();
 	my $val = $result[0];
  	return $val;
@@ -140,6 +141,9 @@ sub setOption{
 	$q4->bind_param(2, $userID, SQL_INTEGER);
 	$q4->bind_param(3, $optionID, SQL_INTEGER);
 	$q4->execute();
+
+	#TODO:
+	#return 0-OPTION not found 1-OK
 }
 
 
@@ -158,13 +162,13 @@ sub BUILD {
 			$self->log("Connected\n");
 		},
 		message => sub {
-			my ($cl, $acc, $msg) = @_;
-			return unless $msg;
+			my ($cl, $acc, $msg) = @_;	
+			return unless $msg;		
 			my ($comm, $args) = split / /, $msg, 2;
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
 			if ($plugin) {
-				my $ret = $plugin->{plugin}->msg_cb($args, $self);
+				my $ret = $plugin->{plugin}->msg_cb($args, $self,$msg);
 				if ($ret) {
 					$repl = $msg->make_reply;
 					$repl->add_body($ret);
