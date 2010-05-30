@@ -1,12 +1,14 @@
 package Aspell;
 use Text::Aspell;
-
 no utf8;
 use Encode;
+with 'xmpbot::Plugin';
 
-sub init {
-	return ['aspell', '',
-		''];
+sub BUILD {
+	my $self = shift;
+	$self->command('aspell');
+	$self->description('');
+	$self->help('');
 }
 
 
