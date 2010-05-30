@@ -32,6 +32,12 @@ has 'plugins' => (
 	},
 );
 
+has 'status' => (
+	is		=> 'rw',
+	isa		=> 'Str',
+	default	=> sub { 'xmpbot' },
+);
+
 has 'verbose' => (
 	is	=> 'rw',
 	isa	=> 'Bool',
@@ -40,7 +46,7 @@ has 'verbose' => (
 
 sub BUILD {
 	my $self = shift;
-	$self->set_presence(undef, "Hurr, I'm a bot");
+	$self->set_presence(undef, $self->status);
 	$self->add_account($self->jid, $self->passwd);
 	$self->reg_cb(
 		session_ready => sub {
