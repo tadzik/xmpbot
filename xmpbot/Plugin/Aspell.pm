@@ -7,8 +7,8 @@ with 'xmpbot::Plugin';
 sub BUILD {
 	my $self = shift;
 	$self->command('aspell');
-	$self->description('');
-	$self->help('');
+	$self->description('validation words');
+	$self->help('example: aspell en who');
 }
 
 

@@ -4,12 +4,14 @@ use Lingua::Translate;
 no utf8;
 use Encode;
 
+with 'xmpbot::Plugin';
 
-sub init {
-	return ['tr', '',
-		''];
+sub BUILD {
+	my $self = shift;
+	$self->command('tr');
+	$self->description('translate');
+	$self->help('example: translate pl2en Co u Ciebie?');
 }
-
 sub msg_cb {
 	#TODO: Another engines(get option from db)
 	#TODO: security-src,desc
