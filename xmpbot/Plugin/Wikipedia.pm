@@ -1,11 +1,16 @@
 package Wikipedia;
 use LWP::Simple;
 use utf8;
+with 'xmpbot::Plugin';
 
-sub init {
-	return ['wiki', 'query wikipedia.org',
-		'this plugin looks up desired article on wikipedia.org and prints it to the user'];
+
+sub BUILD {
+	my $self = shift;
+	$self->command('wiki');
+	$self->description('query wikipedia.org');
+	$self->help('this plugin looks up desired article on wikipedia.org and prints it to the user');
 }
+
 
 sub msg_cb {
 	my ($self, $msg) = @_;

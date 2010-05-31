@@ -2,9 +2,16 @@ package Cloudmade;
 use Geo::Cloudmade;
 use utf8;
 
-sub init {
-	return ['map', 'komenda do wyszukiwania trasy oraz miejsc',"Ta komenda korzysta z wyznaczania tras przez http://www.cloudmade.com na podstawie map http://www.openstreetmap.org. \nPrzykładowe zapytania:\n map ROUTE:Rynek,Wrocław&Damrota,Wrocław   -wyznacz trasę z Rynku na ulicę Damrota\n map POI:restaurant:Rynek,Warszawa    -znajdź najbliższe restauracje od Rynek,Wrocław"];
+
+with 'xmpbot::Plugin';
+
+sub BUILD {
+	my $self = shift;
+	$self->command('map');
+	$self->description('routing and POIs');
+	$self->help("examples:\n map ROUTE:Rynek,Wrocław&Damrota,Wrocław  \n map POI:restaurant:Rynek,Wrocław");
 }
+
 
 sub msg_cb {
 	my ($self, $msg) = @_;
