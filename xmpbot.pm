@@ -25,7 +25,7 @@ has 'passwd' => (
 
 has 'plugins' => (
 	is	=> 'ro',
-	isa	=> 'HashRef[HashRef[Str]]',
+	isa	=> 'HashRef',
 	default	=> sub { {} },
 	traits	=> ['Hash'],
 	handles	=> {
@@ -33,6 +33,12 @@ has 'plugins' => (
 		get_plugin	=> 'get',
 		plugins_pairs	=> 'kv',
 	},
+);
+
+has 'status' => (
+	is		=> 'rw',
+	isa		=> 'Str',
+	default	=> sub { 'xmpbot' },
 );
 
 has 'verbose' => (
@@ -155,7 +161,7 @@ sub BUILD {
 	}
 	setOption($self,"cos","lang","en");
 	print "GET:".getOption($self,"cos","lang")."\n";
-	$self->set_presence(undef, "Hurr, I'm a bot");
+	$self->set_presence(undef, $self->status);
 	$self->add_account($self->jid, $self->passwd);
 	$self->reg_cb(
 		session_ready => sub {
@@ -168,7 +174,11 @@ sub BUILD {
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
 			if ($plugin) {
+<<<<<<< HEAD
 				my $ret = $plugin->{plugin}->msg_cb($args, $self,$msg);
+=======
+				my $ret = $plugin->msg_cb($args, $self);
+>>>>>>> master
 				if ($ret) {
 					$repl = $msg->make_reply;
 					$repl->add_body($ret);
@@ -197,25 +207,17 @@ sub BUILD {
 sub load_plugin {
 	my ($self, $plugin) = @_;
 	load $plugin;
-	my $ret = $plugin->init;
-	next unless $ret;
-	if ($self->get_plugin(@$ret[0])) {
+	my $obj = $plugin->new;
+	if ($self->get_plugin($obj->command)) {
 		$self->log("Plugin $plugin tried to register a ",
-		"keyword @$ret[0], which is alredy registered\n");
+		"keyword ".$obj->command.", which is alredy registered\n");
 	} else {
 		# TODO: Support for passive plugins maybe?
 		# So they return undef instead of a keyword
 		# and always handle every message.
 		# Usecase? Logs, or something
-		$self->set_plugin(
-			@$ret[0] => {
-				plugin	=> $plugin,
-				info	=> @$ret[1],
-				help	=> @$ret[2],
-			},
-		);
-		$self->log("Registered plugin $plugin ",
-			"with keyword @$ret[0]\n");
+		$self->set_plugin($obj->command, $obj);
+		$self->log("Registered plugin $plugin\n");
 	}
 }
 
