@@ -1,6 +1,7 @@
-package Wikipedia;
+package xmpbot::Plugin::Wikipedia;
 use LWP::Simple;
 use utf8;
+use Moose;
 with 'xmpbot::Plugin';
 
 
@@ -15,7 +16,7 @@ sub BUILD {
 sub msg_cb {
 	my ($self, $msg) = @_;
 	$msg=~ tr/ /_/; #changing white spaces
-	($wiki,$rozdzial) = split(/#/, $msg);
+	my ($wiki,$rozdzial) = split(/#/, $msg);
 	#TODO: Zazwyczaj jak ktoś szuka jakiś informacji najpierw wpisze np. wiki Warszawa potem wiki Warszawa#1 itp. Dlatego potrzebny cashe (najlepiej w db)
 	#TODO: lang.wikipedia.org ......
 	my $url = "http://pl.wikipedia.org/w/api.php?action=query&prop=revisions&titles=".$wiki."&rvprop=content&format=xml";
@@ -26,7 +27,7 @@ sub msg_cb {
 	$content=~ s/<\/rev[\s\S]*$//;
 
 	#TODO: Można to ulepszyć
-	$regex = qr/({{([^\}\{])*}})/;
+	my $regex = qr/({{([^\}\{])*}})/;
 	$content=~ s/$regex//g;
 	$content=~ s/$regex//g;
 	$content=~ s/$regex//g;
@@ -34,15 +35,15 @@ sub msg_cb {
 
 
 	#Zmiana linków wikipedi na linki bota
-	$content=~ s/\[\[([^\]\:\|]*)\]\]/\1 {wiki \1}/g;
-	$content=~ s/\[\[([\w\s\(\)\.]*)\|([\w\s\(\)\.]*)\]\]/\2 {wiki \1}/g;
+	$content=~ s/\[\[([^\]\:\|]*)\]\]/$1 {wiki $1}/g;
+	$content=~ s/\[\[([\w\s\(\)\.]*)\|([\w\s\(\)\.]*)\]\]/$2 {wiki $1}/g;
 	#Usuwamy to co zostalo (moze warto potem wyciągnąć różne wersje językowe)
 	$content=~ s/\[\[[^\]]*\]\]//g;
 	#remove new line
 #	$content=~ s///g;
 
 	#Pobieramy rozdziały
-	@rozdzialy = ();
+	my @rozdzialy = ();
 	while ( $content =~ m/(=(==*)([^=]*)===*(([^=]|=[^=])*))/g ){
 	    	push (@rozdzialy, [$2,$3,$4]);
 	}	

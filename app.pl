@@ -16,7 +16,5 @@ $bot->load_plugin('xmpbot::Plugin::Translate');
 $bot->load_plugin('xmpbot::Plugin::Wikipedia');
 $bot->load_plugin('xmpbot::Plugin::Cloudmade');
 $bot->load_plugin('xmpbot::Plugin::Aspell');
-$bot->load_plugin('xmpbot::Plugin::Set');
-$bot->load_plugin('xmpbot::Plugin::Get');
 
 $bot->run;
