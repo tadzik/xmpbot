@@ -1,7 +1,8 @@
-package Aspell;
+package xmpbot::Plugin::Aspell;
 use Text::Aspell;
 no utf8;
 use Encode;
+use Moose;
 with 'xmpbot::Plugin';
 
 sub BUILD {
@@ -20,7 +21,7 @@ sub msg_cb {
 	$speller->set_option('sug-mode','fast');
 	if($lang eq "lista"){		
 		my $ret="Dostępne słowniki";
-		@dicts = $speller->dictionary_info;		
+		my @dicts = $speller->dictionary_info;		
 		foreach (@dicts) {
 			$ret=$ret.$_->{'code'}.", ";
 		}
