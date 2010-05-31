@@ -1,8 +1,7 @@
-package Cloudmade;
+package xmpbot::Plugin::Cloudmade;
 use Geo::Cloudmade;
 use utf8;
-
-
+use Moose;
 with 'xmpbot::Plugin';
 
 sub BUILD {

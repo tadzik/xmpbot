@@ -1,9 +1,9 @@
-package Translate;
+package xmpbot::Plugin::Translate;
 use Lingua::Translate;
 
 no utf8;
 use Encode;
-
+use Moose;
 with 'xmpbot::Plugin';
 
 sub BUILD {
@@ -16,8 +16,8 @@ sub msg_cb {
 	#TODO: Another engines(get option from db)
 	#TODO: security-src,desc
 	my ($self, $msg) = @_;
-	($langs,$text) = split(/ /, $msg,2);	
-	($src,$desc) = split(/2/, $langs); 
+	my ($langs,$text) = split(/ /, $msg,2);	
+	my ($src,$desc) = split(/2/, $langs); 
 
 	Lingua::Translate::config(back_end => 'Google');
 
