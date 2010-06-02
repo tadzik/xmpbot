@@ -159,8 +159,7 @@ sub BUILD {
 	if(checkdb()==1){
 		print "Baza poprawna\n";
 	}
-	setOption($self,"cos","lang","en");
-	print "GET:".getOption($self,"cos","lang")."\n";
+
 	$self->set_presence(undef, $self->status);
 	$self->add_account($self->jid, $self->passwd);
 	$self->reg_cb(
@@ -174,7 +173,7 @@ sub BUILD {
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
 			if ($plugin) {
-				my $ret = $plugin->{plugin}->msg_cb($args, $self,$msg);
+				my $ret = $plugin->msg_cb($args, $self,$msg);
 				if ($ret) {
 					$repl = $msg->make_reply;
 					$repl->add_body($ret);
