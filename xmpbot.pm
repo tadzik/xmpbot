@@ -155,7 +155,6 @@ sub setOption{
 
 sub BUILD {
 	my $self = shift;
-
 	$self->db(DBI->connect("dbi:".$self->DBDriver.":".$self->DBAddr,$self->DBUser,$self->DBPasswd));
 	if(checkdb()==1){
 		print "Baza poprawna\n";
