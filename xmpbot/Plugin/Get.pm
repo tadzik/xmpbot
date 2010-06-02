@@ -1,8 +1,14 @@
-package Get;
+package xmpbot::Plugin::Get;
+use Moose;
+with 'xmpbot::Plugin';
 
-sub init {
-	return ['get','',''];
+sub BUILD {
+	my $self = shift;
+	$self->command('get');
+	$self->description('get option');
+	$self->help('example: get lang');
 }
+
 
 #TODO:	global franek@jabber.org
 #	local  franek@jabber.org/work

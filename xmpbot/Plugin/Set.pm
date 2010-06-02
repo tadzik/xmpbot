@@ -1,8 +1,14 @@
-package Set;
+package xmpbot::Plugin::Set;
+use Moose;
+with 'xmpbot::Plugin';
 
-sub init {
-	return ['set','',''];
+sub BUILD {
+	my $self = shift;
+	$self->command('set');
+	$self->description('set option');
+	$self->help('example: set lang pl');
 }
+
 
 #TODO:	global franek@jabber.org
 #	local  franek@jabber.org/work
