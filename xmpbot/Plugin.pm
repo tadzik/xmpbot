@@ -24,7 +24,7 @@ has 'help' => (
 
 has 'loc' => (
 	is			=> 'rw',
-	isa			=> 'Data::Localize::Gettext'
+	isa			=> 'Data::Localize'
 );
 
 after 'BUILD' => sub {

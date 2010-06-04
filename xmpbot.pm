@@ -173,6 +173,8 @@ sub BUILD {
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
 			if ($plugin) {
+				#TODO: FROM DB
+				$plugin->{loc}->set_languages( 'pl' );
 				my $ret = $plugin->msg_cb($args, $self,$msg);
 				if ($ret) {
 					$repl = $msg->make_reply;
@@ -219,11 +221,10 @@ sub load_plugin {
 sub load_language{
 	my ($self,$language)=@_;
 	my $hash=$self->plugins;
-	while ( my ($key, $value) = each(%$hash) ) {
-        	print "$key";
+	while ( my ($key, $value) = each(%$hash) ) {        	
 		$value->{loc}->add_localizer( 
 			class => "Gettext",
-			path  => "xmpbot/i18n/".$key."/".$language.".po");
+			path  => "xmpbot/i18n/".$key."/".$language.".po");			
     	}
 }
 

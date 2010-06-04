@@ -10,7 +10,7 @@ sub BUILD {
 }
 
 sub msg_cb {
-	my (undef, $args, $bot) = @_;
+	my ($self, $args, $bot) = @_;
 	my $resp;
 	if (not defined $args) {
 		for my $pair ($bot->plugins_pairs) {
@@ -21,7 +21,9 @@ sub msg_cb {
 		if ($comm) {
 			$resp = $comm->help;
 		} else {
-			$resp = "No help available for '$args'";
+			#TODO CHANGE this!
+			$resp= $self->{loc}->localize('No help available for') ." ". $args;			
+#			$resp = "No help available for '%s'",$args;
 		}
 	}
 	return $resp;
