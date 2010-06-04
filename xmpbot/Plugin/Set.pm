@@ -17,7 +17,7 @@ sub msg_cb {
 	my($self, $msg,$bot,$a) = @_;
 	my ($option,$value) = split(/ /, $msg);
 	my @user=split(/\//, $a->from);
-	return $bot->setOption($user[0],$option,$value);	
+	return $bot->db->setOption($user[0],$option,$value);	
 }
 
 1;

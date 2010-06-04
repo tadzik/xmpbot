@@ -16,7 +16,7 @@ sub BUILD {
 sub msg_cb {
 	my($self, $msg,$bot,$a) = @_;	
 	my @user=split(/\//, $a->from);
-	return $bot->getOption($user[0],$msg);	
+	return $bot->db->getOption($user[0],$msg);	
 }
 
 1;
