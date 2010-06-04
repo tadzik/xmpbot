@@ -68,9 +68,9 @@ sub BUILD {
 			my ($comm, $args) = split / /, $msg, 2;
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
-			if ($plugin) {
-				#TODO: FROM DB
-				$plugin->{loc}->set_languages( 'pl' );
+			if ($plugin) {				
+				#my @user=split(/\//, $msg->from);
+				#$plugin->{loc}->set_languages($self->db->getOption($user[0],'lang'));
 				my $ret = $plugin->msg_cb($args, $self,$msg);
 				if ($ret) {
 					$repl = $msg->make_reply;

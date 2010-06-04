@@ -6,7 +6,3 @@ msgstr ""
 msgid "No help available for"
 msgstr "Brak pomocy dla"
 
-#. 
-#: 
-msgid "A"
-msgstr "B"

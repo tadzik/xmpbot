@@ -32,7 +32,7 @@ after 'BUILD' => sub {
 	croak "Command not specified!" unless $self->has_command;
 	carp "Warning: description not set" unless $self->has_description;
 	carp "Warning: help message not set" unless $self->has_help;
-	$self->{loc} = Data::Localize->new();
+	$self->loc(Data::Localize->new());
 };
 
 1;
