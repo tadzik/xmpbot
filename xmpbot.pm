@@ -216,6 +216,17 @@ sub load_plugin {
 	}
 }
 
+sub load_language{
+	my ($self,$language)=@_;
+	my $hash=$self->plugins;
+	while ( my ($key, $value) = each(%$hash) ) {
+        	print "$key";
+		$value->{loc}->add_localizer( 
+			class => "Gettext",
+			path  => "xmpbot/i18n/".$key."/".$language.".po");
+    	}
+}
+
 sub log {
 	my ($self, @args) = @_;
 	if($self->verbose) {
