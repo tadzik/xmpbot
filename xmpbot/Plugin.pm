@@ -1,38 +1,33 @@
 package xmpbot::Plugin;
 use Moose::Role;
-use Data::Localize
-requires 'msg_cb';
+use feature ':5.10';
+use xmpbot;
 use Carp;
 
-has 'command' => (
-	is			=> 'rw',
-	isa			=> 'Str',
-	predicate	=> 'has_command',
+=pod
+Methinks the following should rather go to the Translations role
+	use Data::Localize
+	has 'loc' => (
+		is			=> 'rw',
+		isa			=> 'Data::Localize',
+		default		=> sub { Data::Locallize->new },
+	);
+=cut
+
+has 'bot' => (
+	is		=> 'ro',
+	isa		=> 'xmpbot',
+	required	=> 1,
 );
 
-has 'description' => (
-	is			=> 'rw',
-	isa			=> 'Str',
-	predicate	=> 'has_description',
-);
-
-has 'help' => (
-	is			=> 'rw',
-	isa			=> 'Str',
-	predicate	=> 'has_help',
-);
-
-has 'loc' => (
-	is			=> 'rw',
-	isa			=> 'Data::Localize'
-);
-
-after 'BUILD' => sub {
-	my $self = shift;
-	croak "Command not specified!" unless $self->has_command;
-	carp "Warning: description not set" unless $self->has_description;
-	carp "Warning: help message not set" unless $self->has_help;
-	$self->loc(Data::Localize->new());
-};
+sub register_command {
+	my ($self, $comm) = @_;
+	if ($self->bot->get_plugin($comm)) {
+		croak "Command $comm alredy registered";
+	} else {
+		$self->bot->set_plugin($comm, $self);
+		say "Registered command $comm";
+	}
+}
 
 1;
