@@ -5,10 +5,8 @@ use AnyEvent::XMPP::Client;
 use Module::Load;
 use Moose;
 use MooseX::NonMoose;
-use Data::Dumper;
 extends 'AnyEvent::XMPP::Client';
 
-  
 has 'jid' => (
 	is		=> 'ro',
 	isa		=> 'Str',
@@ -48,10 +46,8 @@ has 'verbose' => (
 has 'db' => (
 	is	=> 'rw',
 	isa	=> 'xmpbot::Database',
+	predicate	=> 'has_db',
 );
-
-
-
 
 sub BUILD {
 	my $self = shift;	
@@ -68,9 +64,9 @@ sub BUILD {
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
 			if ($plugin) {				
-				if($plugin->does('xmpbot::Translations')){
-					my @user=split(/\//, $msg->from);
-					$plugin->{loc}->set_languages($self->db->getOption($user[0],'lang'));
+				if($plugin->does('xmpbot::Translations') && $self->has_db) {
+					my ($user) = split(/\//, $msg->from);
+					$plugin->loc->set_languages($self->db->getOption($user, 'lang'));
 				}
 				my $ret = $plugin->$comm($args);
 				if ($ret) {
@@ -107,15 +103,15 @@ sub load_plugin {
 }
 
 sub load_language{
-	my ($self,$language)=@_;
-	my $hash=$self->plugins;
-	while ( my ($key, $value) = each(%$hash) ) {        	
-		if($value->does('xmpbot::Translations')){
-			$value->{loc}->add_localizer( 
+	my ($self, $language) = @_;
+	my $hash = $self->plugins;
+	while ( my ($key, $value) = each(%$hash) ) {
+		if($value->does('xmpbot::Translations')) {
+			$value->loc->add_localizer(
 				class => "Gettext",
-				path  => "xmpbot/i18n/".$key."/".$language.".po");			
+				path  => "xmpbot/i18n/".$key."/".$language.".po");
 		}
-    	}
+    }
 }
 
 sub log {
