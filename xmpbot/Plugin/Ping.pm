@@ -1,6 +1,7 @@
 package xmpbot::Plugin::Ping;
 use Moose;
 with 'xmpbot::Plugin';
+with 'xmpbot::Translations';
 
 sub BUILD {
 	my $self = shift;
@@ -9,11 +10,13 @@ sub BUILD {
 }
 
 sub ping {
-	return 'pong'
+	my $self = shift;
+	return $self->loc->localize('pong');
 }
 
 sub pong {
-	return 'ping'
+	my $self = shift;
+	return $self->loc->localize('ping');
 }
 
 1;

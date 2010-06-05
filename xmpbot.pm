@@ -68,8 +68,10 @@ sub BUILD {
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
 			if ($plugin) {				
-				#my @user=split(/\//, $msg->from);
-				#$plugin->{loc}->set_languages($self->db->getOption($user[0],'lang'));
+				if($plugin->does('xmpbot::Translations')){
+					my @user=split(/\//, $msg->from);
+					$plugin->{loc}->set_languages($self->db->getOption($user[0],'lang'));
+				}
 				my $ret = $plugin->$comm($args);
 				if ($ret) {
 					$repl = $msg->make_reply;
@@ -108,9 +110,11 @@ sub load_language{
 	my ($self,$language)=@_;
 	my $hash=$self->plugins;
 	while ( my ($key, $value) = each(%$hash) ) {        	
-		$value->{loc}->add_localizer( 
-			class => "Gettext",
-			path  => "xmpbot/i18n/".$key."/".$language.".po");			
+		if($value->does('xmpbot::Translations')){
+			$value->{loc}->add_localizer( 
+				class => "Gettext",
+				path  => "xmpbot/i18n/".$key."/".$language.".po");			
+		}
     	}
 }
 

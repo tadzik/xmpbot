@@ -1,0 +1,8 @@
+msgid ""
+msgstr ""
+
+msgid "ping"
+msgstr "ping PL"
+
+msgid "pong"
+msgstr "pong PL"

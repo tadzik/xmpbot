@@ -4,16 +4,6 @@ use feature ':5.10';
 use xmpbot;
 use Carp;
 
-=pod
-Methinks the following should rather go to the Translations role
-	use Data::Localize
-	has 'loc' => (
-		is			=> 'rw',
-		isa			=> 'Data::Localize',
-		default		=> sub { Data::Locallize->new },
-	);
-=cut
-
 has 'bot' => (
 	is		=> 'ro',
 	isa		=> 'xmpbot',
