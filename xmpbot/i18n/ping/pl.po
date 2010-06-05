@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 
 msgid "ping"
-msgstr "ping PL"
+msgstr "pingPL"
 
 msgid "pong"
-msgstr "pong PL"
+msgstr "pongPL"

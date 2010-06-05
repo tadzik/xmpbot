@@ -109,12 +109,22 @@ sub load_plugin {
 sub load_language{
 	my ($self,$language)=@_;
 	my $hash=$self->plugins;
-	while ( my ($key, $value) = each(%$hash) ) {        	
-		if($value->does('xmpbot::Translations')){
-			$value->{loc}->add_localizer( 
-				class => "Gettext",
-				path  => "xmpbot/i18n/".$key."/".$language.".po");			
+
+	my @plugins=();
+	my $is=undef;
+	while ( my ($key, $value) = each(%$hash) ) {   
+		#TODO: It's ugly :-/
+		$is=0;
+		foreach(@plugins){
+			if($_ eq $value){
+				$is=1;
+			}
 		}
+	
+		if($is==0 and $value->does('xmpbot::Translations')){
+			$value->load_i18n("xmpbot/i18n/",$language);			
+		}
+		push (@plugins,$value);
     	}
 }
 

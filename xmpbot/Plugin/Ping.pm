@@ -7,6 +7,7 @@ sub BUILD {
 	my $self = shift;
 	$self->register_command('ping');
 	$self->register_command('pong');
+	$self->name("ping");
 }
 
 sub ping {
