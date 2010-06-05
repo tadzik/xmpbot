@@ -50,7 +50,7 @@ has 'db' => (
 );
 
 sub BUILD {
-	my $self = shift;	
+	my $self = shift;
 	$self->set_presence(undef, $self->status);
 	$self->add_account($self->jid, $self->passwd);
 	$self->reg_cb(
@@ -58,12 +58,12 @@ sub BUILD {
 			$self->log("Connected\n");
 		},
 		message => sub {
-			my ($cl, $acc, $msg) = @_;	
-			return unless $msg;		
+			my ($cl, $acc, $msg) = @_;
+			return unless $msg;
 			my ($comm, $args) = split / /, $msg, 2;
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
-			if ($plugin) {				
+			if ($plugin) {
 				if($plugin->does('xmpbot::Translations') && $self->has_db) {
 					my ($user) = split(/\//, $msg->from);
 					$plugin->loc->set_languages($self->db->getOption($user, 'lang'));
@@ -111,7 +111,7 @@ sub load_language{
 				class => "Gettext",
 				path  => "xmpbot/i18n/".$key."/".$language.".po");
 		}
-    }
+	}
 }
 
 sub log {

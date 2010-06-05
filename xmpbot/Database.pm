@@ -58,7 +58,7 @@ sub getOption{
 	$sth->execute() or print $sth->errstr()."\n";
 	my @result = $sth->fetchrow_array();
 	my $val = $result[0];
- 	return $val;
+	return $val;
 }
 
 sub setOption{
@@ -114,5 +114,8 @@ sub setOption{
 	#TODO:
 	#return 0-OPTION not found 1-OK
 }
-1;
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+1;
