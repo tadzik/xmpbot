@@ -1,6 +1,5 @@
 package xmpbot;
 use feature ':5.10';
-use lib 'plugins';
 use AnyEvent;
 use AnyEvent::XMPP::Client;
 use Module::Load;
@@ -59,7 +58,7 @@ sub BUILD {
 			my $repl = undef;
 			my $plugin = $self->get_plugin($comm);
 			if ($plugin) {
-				my $ret = $plugin->msg_cb($args, $self);
+				my $ret = $plugin->$comm($args);
 				if ($ret) {
 					$repl = $msg->make_reply;
 					$repl->add_body($ret);
@@ -88,18 +87,9 @@ sub BUILD {
 sub load_plugin {
 	my ($self, $plugin) = @_;
 	load $plugin;
-	my $obj = $plugin->new;
-	if ($self->get_plugin($obj->command)) {
-		$self->log("Plugin $plugin tried to register a ",
-		"keyword ".$obj->command.", which is alredy registered\n");
-	} else {
-		# TODO: Support for passive plugins maybe?
-		# So they return undef instead of a keyword
-		# and always handle every message.
-		# Usecase? Logs, or something
-		$self->set_plugin($obj->command, $obj);
-		$self->log("Registered plugin $plugin\n");
-	}
+	# we don't need the actual object, it'll take care of itself
+	$plugin->new(bot => $self);
+	$self->log("Registered plugin $plugin\n");
 }
 
 sub log {

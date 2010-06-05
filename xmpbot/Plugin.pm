@@ -1,31 +1,27 @@
 package xmpbot::Plugin;
 use Moose::Role;
-requires 'msg_cb';
+use feature ':5.10';
+use xmpbot;
 use Carp;
 
-has 'command' => (
-	is			=> 'rw',
-	isa			=> 'Str',
-	predicate	=> 'has_command',
+has 'bot' => (
+	is		=> 'ro',
+	isa		=> 'xmpbot',
+	required	=> 1,
 );
 
-has 'description' => (
-	is			=> 'rw',
-	isa			=> 'Str',
-	predicate	=> 'has_description',
-);
-
-has 'help' => (
-	is			=> 'rw',
-	isa			=> 'Str',
-	predicate	=> 'has_help',
-);
+sub register_command {
+	my ($self, $comm) = @_;
+	if ($self->bot->get_plugin($comm)) {
+		croak "Command $comm alredy registered";
+	} else {
+		$self->bot->set_plugin($comm, $self);
+		say "Registered command $comm";
+	}
+}
 
 after 'BUILD' => sub {
 	my $self = shift;
-	croak "Command not specified!" unless $self->has_command;
-	carp "Warning: description not set" unless $self->has_description;
-	carp "Warning: help message not set" unless $self->has_help;
 };
 
 1;

@@ -4,13 +4,16 @@ with 'xmpbot::Plugin';
 
 sub BUILD {
 	my $self = shift;
-	$self->command('ping');
-	$self->description('respond to "ping"');
-	$self->help('This plugin responds to "ping" with "pong". Yep, that\'s it');
+	$self->register_command('ping');
+	$self->register_command('pong');
 }
 
-sub msg_cb {
-	return "pong";
+sub ping {
+	return 'pong'
+}
+
+sub pong {
+	return 'ping'
 }
 
 1;
