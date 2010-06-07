@@ -21,12 +21,10 @@ after 'BUILD' => sub {
 };
 
 sub load_i18n{
-	my ($self,$path,$lang) = @_;
+	my ($self,$path,$lang,$command) = @_;
 	$self->loc->add_localizer(class => "Gettext",path  => $path."/".$self->name()."/".$lang.".po");
 	$self->loc->set_languages($lang);
-	foreach ($self->all_commands){
-		$self->register_command($self->loc->localize($_),$lang);
-	}
+	$self->register_command($self->loc->localize($command),$lang);	
 }
 
 1;
