@@ -11,11 +11,11 @@ has 'bot' => (
 );
 
 sub register_command {
-	my ($self, $comm,$lang) = @_;
-	if ($self->bot->get_plugin($comm)) {
+	my ($self, $comm,$lang,$func) = @_;
+	if ($self->bot->get_plugin($comm,$lang//"en")) {
 		croak "Command $comm alredy registered";
 	} else {
-		$self->bot->set_plugin($comm, $self);
+		$self->bot->set_plugin($comm, $self,$lang//"en",$func//$comm);
 		say "Registered command $comm";
 	}
 

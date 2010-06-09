@@ -24,7 +24,7 @@ sub load_i18n{
 	my ($self,$path,$lang,$command) = @_;
 	$self->loc->add_localizer(class => "Gettext",path  => $path."/".$self->name()."/".$lang.".po");
 	$self->loc->set_languages($lang);
-	$self->register_command($self->loc->localize($command),$lang);	
+	$self->register_command($self->loc->localize($command),$lang,$command);	
 }
 
 1;
