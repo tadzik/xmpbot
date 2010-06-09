@@ -70,10 +70,11 @@ sub BUILD {
 			#nativ
 			my @user=split(/\//, $msg->from);
 			my $lang=$self->db->getOption($user[0],'lang');
+			print $lang,"\n";
 			my $hash = $self->get_plugin($comm,$lang);
 			#english
 			if(not $hash){
-				$hash = $self->get_plugin($comm,"en");
+				$hash = $self->get_plugin($comm,"default");
 			}
 
 			if ($hash) {			
@@ -82,7 +83,7 @@ sub BUILD {
 					$plugin->{loc}->set_languages();
 				}
 				my $func=$hash->{func};				
-				my $ret = $plugin->$func($args);
+				my $ret = $plugin->$func($args,$self,$msg);
 				if ($ret) {
 					$repl = $msg->make_reply;
 					$repl->add_body($ret);
@@ -139,8 +140,8 @@ sub load_plugin {
 
 sub load_language{
 	my ($self,$language)=@_;
-	my $hash=$self->i18ncommands->{"en"};
-	while ( my ($key, $value) = each(%$hash) ) {  		 
+	my $hash=$self->i18ncommands->{"default"};
+	while ( my ($key, $value) = each(%$hash) ) {  	
 		if($value->{plugin}->does('xmpbot::Translations')){
 			$value->{plugin}->load_i18n("xmpbot/i18n",$language,$key);			
 		}

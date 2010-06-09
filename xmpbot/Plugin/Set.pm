@@ -1,23 +1,31 @@
 package xmpbot::Plugin::Set;
 use Moose;
 with 'xmpbot::Plugin';
+with 'xmpbot::Translations';
 
 sub BUILD {
 	my $self = shift;
-	$self->command('set');
-	$self->description('set option');
-	$self->help('example: set lang pl');
+	$self->register_command('set');
+	$self->name("set");
 }
 
 
-#TODO:	global franek@jabber.org
-#	local  franek@jabber.org/work
+sub getDescription{
+	my($self) = @_;
+	return $self->loc->localize('set option');
+}
 
-sub msg_cb {
+sub getHelp{
+	my($self) = @_;
+	return $self->loc->localize('example: set lang pl');
+}
+
+
+sub set{
 	my($self, $msg,$bot,$a) = @_;
 	my ($option,$value) = split(/ /, $msg);
 	my @user=split(/\//, $a->from);
-	return $bot->db->setOption($user[0],$option,$value);	
+	print $user[0],"\n";	
 }
 
 1;

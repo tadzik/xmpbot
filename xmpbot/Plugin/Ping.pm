@@ -10,6 +10,17 @@ sub BUILD {
 	$self->name("ping");
 }
 
+sub getDescription{
+	my($self) = @_;
+	return $self->loc->localize('This plugin responds to "ping" with "pong". Yep, that\'s it');
+}
+
+sub getHelp{
+	my($self) = @_;
+	return $self->loc->localize('respond to "ping" and "pong"');
+}
+
+
 sub ping {
 	my $self = shift;
 	return $self->loc->localize('pong');

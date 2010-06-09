@@ -58,6 +58,7 @@ sub getOption{
 	$sth->execute() or print $sth->errstr()."\n";
 	my @result = $sth->fetchrow_array();
 	my $val = $result[0];
+	print $val,"\n";
  	return $val;
 }
 
@@ -88,14 +89,15 @@ sub setOption{
 	my @usersRESULT = $q2->fetchrow_array();
 	#not found
 	if($#usersRESULT<0){
+		print "User not found","\n";
 		my $userAddQuery = $self->dbi->prepare("INSERT INTO users (jid) VALUES (?)");
 		$userAddQuery->bind_param(1, $user, SQL_VARCHAR);
 		$userAddQuery->execute();
 		$userID=$self->db->func('last_insert_rowid');
 	}else{
-		$userID = $result[0];
+		$userID = $usersRESULT[0];
 	}
-	print 'USERID:'.$userID."\n";
+	print 'USERID:'.$userID.",".$user."\n";
 	#SETVALUE
 	my $q3 = $self->dbi->prepare("INSERT INTO vals (userID,optionID,value) SELECT ?,?,NULL  WHERE ? NOT IN (SELECT optionID FROM vals WHERE userID=? AND optionID=?)");
 	#TODO: It's UGLY
