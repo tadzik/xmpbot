@@ -1,22 +1,31 @@
 package xmpbot::Plugin::Get;
 use Moose;
 with 'xmpbot::Plugin';
+with 'xmpbot::Translations';
 
 sub BUILD {
 	my $self = shift;
-	$self->command('get');
-	$self->description('get option');
-	$self->help('example: get lang');
+	$self->register_command('get');
+	$self->name("get");
 }
 
 
-#TODO:	global franek@jabber.org
-#	local  franek@jabber.org/work
+sub getDescription{
+	my($self) = @_;
+	return $self->loc->localize('get option');
+}
 
-sub msg_cb {
+sub getHelp{
+	my($self) = @_;
+	return $self->loc->localize('example: get lang');
+}
+
+
+sub get{
 	my($self, $msg,$bot,$a) = @_;	
 	my @user=split(/\//, $a->from);
-	return $bot->db->getOption($user[0],$msg);	
+	return $bot->db->getOption($user[0],$msg);
 }
+
 
 1;

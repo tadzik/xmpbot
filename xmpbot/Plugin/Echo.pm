@@ -1,16 +1,28 @@
 package xmpbot::Plugin::Echo;
 use Moose;
 with 'xmpbot::Plugin';
+with 'xmpbot::Translations';
 
 sub BUILD {
 	my $self = shift;
-	$self->command('echo');
-	$self->description('echoes what was said');
-	$self->help('This plugin simply retypes what the user said');
+	$self->register_command('echo');
+	$self->name("echo");
 }
 
-sub msg_cb {
-	my ($self, $msg) = @_;
+
+sub getDescription{
+	my($self) = @_;
+	return $self->loc->localize('echoes what was said');
+}
+
+sub getHelp{
+	my($self) = @_;
+	return $self->loc->localize('This plugin simply retypes what the user said');
+}
+
+
+sub echo{
+	my($self, $msg) = @_;
 	return $msg;
 }
 

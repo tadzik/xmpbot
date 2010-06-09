@@ -3,16 +3,27 @@ use Geo::Cloudmade;
 use utf8;
 use Moose;
 with 'xmpbot::Plugin';
+with 'xmpbot::Translations';
 
 sub BUILD {
 	my $self = shift;
-	$self->command('map');
-	$self->description('routing and POIs');
-	$self->help("examples:\n map ROUTE:Rynek,Wrocław&Damrota,Wrocław  \n map POI:restaurant:Rynek,Wrocław");
+	$self->register_command('map');
+	$self->name("cloudmade");
 }
 
 
-sub msg_cb {
+sub getDescription{
+	my($self) = @_;
+	return $self->loc->localize('routing and POIs');
+}
+
+sub getHelp{
+	my($self) = @_;
+	return $self->loc->localize('examples:\n map ROUTE:Rynek,Wrocław&Damrota,Wrocław  \n map POI:restaurant:Rynek,Wrocław');
+}
+
+
+sub map{
 	my ($self, $msg) = @_;
 	my ($parametr,$values) = split(/:/, $msg,2);	
 	#Api key
@@ -94,6 +105,7 @@ sub msg_cb {
 		return $ret;	
 	}
 }
+
 
 1;
 

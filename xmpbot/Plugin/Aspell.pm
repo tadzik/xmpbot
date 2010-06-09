@@ -4,16 +4,27 @@ no utf8;
 use Encode;
 use Moose;
 with 'xmpbot::Plugin';
+with 'xmpbot::Translations';
 
 sub BUILD {
 	my $self = shift;
-	$self->command('aspell');
-	$self->description('validation words');
-	$self->help('example: aspell en who');
+	$self->register_command('aspell');
+	$self->name("aspell");
 }
 
 
-sub msg_cb {
+sub getDescription{
+	my($self) = @_;
+	return $self->loc->localize('validation word');
+}
+
+sub getHelp{
+	my($self) = @_;
+	return $self->loc->localize('example: aspell en who');
+}
+
+
+sub aspell{
 	my ($self, $msg) = @_;
 	my ($lang,$word) = split(/ /, $msg);
 	print "Aspell.pm:".$lang."-".$word."\n";
@@ -45,5 +56,6 @@ sub msg_cb {
 		return decode 'utf8', $ret;
 	}
 }
+
 
 1;

@@ -3,17 +3,26 @@ use LWP::Simple;
 use utf8;
 use Moose;
 with 'xmpbot::Plugin';
-
+with 'xmpbot::Translations';
 
 sub BUILD {
 	my $self = shift;
-	$self->command('wiki');
-	$self->description('query wikipedia.org');
-	$self->help('this plugin looks up desired article on wikipedia.org and prints it to the user');
+	$self->register_command('wiki');
+	$self->name("wikipedia");
+}
+
+sub getDescription{
+	my($self) = @_;
+	return $self->loc->localize('query wikipedia.org');
+}
+
+sub getHelp{
+	my($self) = @_;
+	return $self->loc->localize('This plugin looks up desired article on wikipedia.org and prints it to the user');
 }
 
 
-sub msg_cb {
+sub wiki{
 	my ($self, $msg) = @_;
 	$msg=~ tr/ /_/; #changing white spaces
 	my ($wiki,$rozdzial) = split(/#/, $msg);
@@ -63,5 +72,6 @@ sub msg_cb {
 	$ret="Źródło: http://pl.wikipedia.org/wiki/".$wiki."\n\n".$ret;
 	return $ret;
 }
+
 
 1;
