@@ -104,13 +104,14 @@ sub load_plugin {
 
 sub load_language{
 	my ($self, $language) = @_;
-	my $hash = $self->plugins;
-	while ( my ($key, $value) = each(%$hash) ) {
-		if($value->does('xmpbot::Translations')) {
-			$value->loc->add_localizer(
+	for my $pair ($self->plugins_pairs) {
+		if($pair->[1]->does('xmpbot::Translations')) {
+			$pair->[1]->loc->add_localizer(
 				class => "Gettext",
-				path  => "xmpbot/i18n/".$key."/".$language.".po");
+				path  => "xmpbot/i18n/".$pair->[0]."/".$language.".po");
 		}
+		say $pair->[0]->ping;
+		say $pair->[0]->ping;
 	}
 }
 
