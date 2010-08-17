@@ -70,7 +70,7 @@ sub BUILD {
 				}
 				my $ret = $plugin->$comm($args,
 										{
-											jid => $acc->jid,
+											jid => $msg->from,
 											raw => $msg,
 										}
 									);
