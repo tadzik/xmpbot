@@ -4,12 +4,10 @@ with 'xmpbot::Plugin';
 
 sub BUILD {
 	my $self = shift;
-	$self->command('echo');
-	$self->description('echoes what was said');
-	$self->help('This plugin simply retypes what the user said');
+	$self->register_command('echo');
 }
 
-sub msg_cb {
+sub echo {
 	my ($self, $msg) = @_;
 	return $msg;
 }
