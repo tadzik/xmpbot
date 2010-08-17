@@ -68,7 +68,12 @@ sub BUILD {
 					my ($user) = split(/\//, $msg->from);
 					$plugin->loc->set_languages($self->db->getOption($user, 'lang'));
 				}
-				my $ret = $plugin->$comm($args);
+				my $ret = $plugin->$comm($args,
+										{
+											jid => $acc->jid,
+											raw => $msg,
+										}
+									);
 				if ($ret) {
 					$repl = $msg->make_reply;
 					$repl->add_body($ret);

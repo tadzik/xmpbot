@@ -8,7 +8,8 @@ sub BUILD {
 }
 
 sub echo {
-	my ($self, $msg) = @_;
+	my ($self, $msg, $data) = @_;
+	warn "Echo/log: $data->{jid} said exactly $data->{raw}\n";
 	return $msg;
 }
 
